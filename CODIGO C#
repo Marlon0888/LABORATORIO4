@@ -1,0 +1,183 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+// ============================================================
+// CLASE BASE ABSTRACTA: Material
+// ============================================================
+abstract class Material 
+{
+    public string Titulo { get; set; }
+    public string Autor  { get; set; }
+    public int    Anno   { get; set; }
+    public Material(string titulo, string autor, int anno) 
+{
+        Titulo = titulo;
+        Autor  = autor;
+        Anno   = anno;
+}
+    public abstract void MostrarInfo();
+}
+// ============================================================
+// CLASE DERIVADA: Libro
+// ============================================================
+class Libro : Material 
+{
+    public string Genero       { get; set; }
+    public int    NumPaginas   { get; set; }
+    public bool   EstaDisponible { get; set; } = true;
+    public Libro(string titulo, string autor, int anno,
+                 string genero, int numPaginas)
+        : base(titulo, autor, anno) 
+{
+        Genero     = genero;
+        NumPaginas = numPaginas;
+}
+    public override void MostrarInfo() 
+{
+        string estado = EstaDisponible ? "Disponible" : "Prestado";
+        Console.WriteLine($"[LIBRO]   {Titulo,-30} | Autor: {Autor,-20} | Anno: {Anno} | Genero: {Genero,-12} | Paginas: {NumPaginas,4} | Estado: {estado}");
+}
+}
+// ============================================================
+// CLASE DERIVADA: Revista
+// ============================================================
+class Revista : Material 
+{
+    public int    Edicion  { get; set; }
+    public string Tematica { get; set; }
+    public Revista(string titulo, string autor, int anno,
+                   int edicion, string tematica)
+        : base(titulo, autor, anno)
+{
+        Edicion  = edicion;
+        Tematica = tematica;
+}
+    public override void MostrarInfo() 
+{
+        Console.WriteLine($"[REVISTA] {Titulo,-30} | Autor: {Autor,-20} | Anno: {Anno} | Edicion: {Edicion,4} | Tematica: {Tematica}");
+}
+}
+// ============================================================
+// CLASE: Biblioteca
+// ============================================================
+class Biblioteca 
+{
+    private List<Material> catalogo = new List<Material>();
+    public void Agregar(Material m) =>
+        catalogo.Add(m);
+    public Material BuscarPorTitulo(string titulo) =>
+        catalogo.FirstOrDefault(m => m.Titulo.Equals(titulo, StringComparison.OrdinalIgnoreCase));
+    public void ListarDisponibles() 
+{
+        Console.WriteLine("\n=== LIBROS DISPONIBLES ===");
+        var disponibles = catalogo.OfType<Libro>().Where(l => l.EstaDisponible).ToList();
+        if (disponibles.Count == 0)
+            Console.WriteLine("  (No hay libros disponibles)");
+        else
+            disponibles.ForEach(l => l.MostrarInfo());
+}
+public void PrestarLibro(string titulo) 
+{
+        var libro = catalogo.OfType<Libro>()
+                            .FirstOrDefault(l => l.Titulo.Equals(titulo, StringComparison.OrdinalIgnoreCase));
+        if (libro == null)
+            throw new Exception($"No se encontro el libro \"{titulo}\".");
+        if (!libro.EstaDisponible)
+            throw new Exception($"\"{titulo}\" ya esta prestado.");
+        libro.EstaDisponible = false;
+        Console.WriteLine($"  >> Libro \"{titulo}\" prestado con exito.");
+}
+public void DevolverLibro(string titulo) 
+{
+        var libro = catalogo.OfType<Libro>()
+                            .FirstOrDefault(l => l.Titulo.Equals(titulo, StringComparison.OrdinalIgnoreCase));
+        if (libro == null)
+            throw new Exception($"No se encontro el libro \"{titulo}\".");
+        if (libro.EstaDisponible)
+            throw new Exception($"\"{titulo}\" no estaba prestado.");
+        libro.EstaDisponible = true;
+
+        Console.WriteLine($"  >> Libro \"{titulo}\" devuelto con exito.");
+}
+public void ListarTodo() 
+{
+        Console.WriteLine($"\n=== CATALOGO COMPLETO ({catalogo.Count} materiales) ===");
+        catalogo.ForEach(m => m.MostrarInfo());
+}
+}
+// ============================================================
+// PROGRAMA PRINCIPAL
+// ============================================================
+class Program 
+{
+    static void Main(string[] args) 
+{
+ Biblioteca bib = new Biblioteca();
+        // Agregar libros
+        bib.Agregar(new Libro("Cien Anios de Soledad", "Garcia Marquez", 1967, "Novela", 417));
+        bib.Agregar(new Libro("El Principito", "Saint-Exupery", 1943, "Infantil", 96));
+        bib.Agregar(new Libro("1984", "George Orwell", 1949, "Distopia", 328));
+        // Agregar revistas
+        bib.Agregar(new Revista("National Geographic", "Varios", 2024, 312, "Ciencia y Naturaleza"));
+        bib.Agregar(new Revista("Scientific American", "Varios", 2023, 289, "Tecnologia"));
+        int opcion;
+        do
+{
+            Console.WriteLine("\n===== MENU =====");
+            Console.WriteLine("1. PRESTAMOS");
+            Console.WriteLine("2. INTENTO PRESTAR LIBRO YA PRESTADO");
+            Console.WriteLine("3. DEVOLUCION");
+            Console.WriteLine("4. BUSQUEDA");
+            Console.WriteLine("5. VER CATALOGO");
+            Console.WriteLine("6. SALIR");
+            Console.Write("Seleccione una opcion: ");
+            opcion = int.Parse(Console.ReadLine());
+            switch (opcion)
+{
+                case 1:
+                    Console.WriteLine("\n=== PRESTAMOS ===");
+                    Console.Write("Titulo del libro: ");
+                    string prestar = Console.ReadLine();
+                    try { bib.PrestarLibro(prestar); }
+                    catch (Exception e) { Console.WriteLine(e.Message); }
+                    break;
+                case 2:
+                    Console.WriteLine("\n=== INTENTO PRESTAR LIBRO YA PRESTADO ===");
+                    Console.Write("Titulo del libro: ");
+                    string intento = Console.ReadLine();
+                    try { bib.PrestarLibro(intento); }
+                    catch (Exception e) { Console.WriteLine(e.Message); }
+                    break;
+                case 3:
+                    Console.WriteLine("\n=== DEVOLUCION ===");
+                    Console.Write("Titulo del libro: ");
+                    string devolver = Console.ReadLine();
+                    try { bib.DevolverLibro(devolver); }
+                    catch (Exception e) { Console.WriteLine(e.Message); }
+                    break;
+                case 4:
+                    Console.WriteLine("\n=== BUSQUEDA ===");
+                    Console.Write("Titulo a buscar: ");
+                    string buscar = Console.ReadLine();
+                    var encontrado = bib.BuscarPorTitulo(buscar);
+                    if (encontrado != null)
+{
+                        Console.Write("Disponible: ");
+                        encontrado.MostrarInfo();
+}
+                    else
+                        Console.WriteLine("No disponible.");
+                    break;
+                case 5:
+                    bib.ListarTodo();
+                    break;
+                case 6:
+                    Console.WriteLine("Saliendo del sistema...");
+                    break;
+                default:
+                    Console.WriteLine("Opcion invalida.");
+                    break;
+}
+} while (opcion != 6);
+    }
+}
