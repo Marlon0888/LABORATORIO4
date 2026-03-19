@@ -1,0 +1,201 @@
+using System;
+
+class Empleado
+{
+    public string nombre;
+    public int cedula;
+    public int horasTrabajadas;
+    public double valorHora;
+    public int horasExtras;
+    public double valorHoraExtra;
+    
+    public double CalcularSalarioBase()
+    {
+        return horasTrabajadas * valorHora;
+    }
+    
+    public double CalcularPagoExtras()
+    {
+        return horasExtras * valorHoraExtra;
+    }
+    
+    public double CalcularDeducciones()
+    {
+        double salarioBase = CalcularSalarioBase();
+        return salarioBase * 0.08; // 4% EPS + 4% FP
+    }
+    
+    public double CalcularSalarioTotal()
+    {
+        double salarioBase = CalcularSalarioBase();
+        double pagoExtras = CalcularPagoExtras();
+        double deducciones = CalcularDeducciones();
+        
+        return (salarioBase + pagoExtras) - deducciones;
+    }
+    
+    public void MostrarDetalle()
+    {
+        double salarioBase = CalcularSalarioBase();
+        double pagoExtras = CalcularPagoExtras();
+        double deducciones = CalcularDeducciones();
+        double salarioTotal = CalcularSalarioTotal();
+        
+        Console.WriteLine($"\n--- DETALLE EMPLEADO: {nombre} ---");
+        Console.WriteLine($"Cédula: {cedula}");
+        Console.WriteLine($"Salario base: ${salarioBase:N0}");
+        Console.WriteLine($"Pago horas extras: ${pagoExtras:N0}");
+        Console.WriteLine($"Deducciones (EPS+FP): ${deducciones:N0}");
+        
+        // RESALTAR EN ROJO SI GANA MENOS DE 2 MILLONES
+        if (salarioTotal < 2000000)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"SALARIO TOTAL: ${salarioTotal:N0} (MENOR A 2 MILLONES)");
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.WriteLine($"SALARIO TOTAL: ${salarioTotal:N0}");
+        }
+        
+        Console.WriteLine("-----------------------------------");
+    }
+}
+
+class Program
+{
+    const int TOTAL_EMPLEADOS = 50;
+    
+    static void Main()
+    {
+        Empleado[] empleados = new Empleado[TOTAL_EMPLEADOS];
+        double[] salariosBase = new double[TOTAL_EMPLEADOS];
+        double[] pagosExtras = new double[TOTAL_EMPLEADOS];
+        double[] deducciones = new double[TOTAL_EMPLEADOS];
+        double[] salariosTotales = new double[TOTAL_EMPLEADOS];
+        
+        Console.WriteLine("======================================");
+        Console.WriteLine("   SISTEMA DE NOMINA EMPRESARIAL");
+        Console.WriteLine($"   TOTAL EMPLEADOS A REGISTRAR: {TOTAL_EMPLEADOS}");
+        Console.WriteLine("======================================");
+        
+        // Registro de empleados UNO POR UNO
+        for (int i = 0; i < TOTAL_EMPLEADOS; i++)
+        {
+            empleados[i] = new Empleado();
+            
+            Console.WriteLine($"\n--- REGISTRO EMPLEADO #{i + 1} ---");
+            
+            Console.Write("Nombre completo: ");
+            empleados[i].nombre = Console.ReadLine();
+            
+            Console.Write("Número de cedula: ");
+            empleados[i].cedula = int.Parse(Console.ReadLine());
+            
+            Console.Write("Horas trabajadas en el mes: ");
+            empleados[i].horasTrabajadas = int.Parse(Console.ReadLine());
+            
+            Console.Write("Valor por hora ordinaria: $");
+            empleados[i].valorHora = double.Parse(Console.ReadLine());
+            
+            Console.Write("Cantidad de horas extras: ");
+            empleados[i].horasExtras = int.Parse(Console.ReadLine());
+            
+            Console.Write("Valor por hora extra: $");
+            empleados[i].valorHoraExtra = double.Parse(Console.ReadLine());
+            
+            // Calcular y guardar en arreglos
+            salariosBase[i] = empleados[i].CalcularSalarioBase();
+            pagosExtras[i] = empleados[i].CalcularPagoExtras();
+            deducciones[i] = empleados[i].CalcularDeducciones();
+            salariosTotales[i] = empleados[i].CalcularSalarioTotal();
+            
+            // Mostrar detalle del empleado recién registrado
+            empleados[i].MostrarDetalle();
+            
+            Console.WriteLine("Presione ENTER para continuar...");
+            Console.ReadLine();
+            Console.Clear(); // Limpia la pantalla para el siguiente empleado
+        }
+        
+        // REPORTE FINAL - CON ROJO PARA MENORES DE 2 MILLONES
+        Console.WriteLine("\n\n");
+        Console.WriteLine("==================================================");
+        Console.WriteLine("           REPORTE FINAL DE NOMINA");
+        Console.WriteLine("==================================================");
+        Console.WriteLine("No.  NOMBRE            CEDULA        SALARIO TOTAL");
+        Console.WriteLine("--------------------------------------------------");
+        
+        for (int i = 0; i < TOTAL_EMPLEADOS; i++)
+        {
+            // RESALTAR EN ROJO SI GANA MENOS DE 2 MILLONES
+            if (salariosTotales[i] < 2000000)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{(i + 1),3}  {empleados[i].nombre,-16} {empleados[i].cedula,-12} ${salariosTotales[i],12:N0}  <--- MENOR A 2 MILLONES");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"{(i + 1),3}  {empleados[i].nombre,-16} {empleados[i].cedula,-12} ${salariosTotales[i],12:N0}");
+            }
+            
+            Console.ResetColor();
+        }
+        
+        // Estadísticas
+        double totalNomina = 0;
+        int contadorSalariosBajos = 0;
+        double maxSalario = 0;
+        double minSalario = double.MaxValue;
+        string nombreMax = "", nombreMin = "";
+        
+        for (int i = 0; i < TOTAL_EMPLEADOS; i++)
+        {
+            totalNomina += salariosTotales[i];
+            
+            if (salariosTotales[i] < 2000000)
+                contadorSalariosBajos++;
+            
+            if (salariosTotales[i] > maxSalario)
+            {
+                maxSalario = salariosTotales[i];
+                nombreMax = empleados[i].nombre;
+            }
+            
+            if (salariosTotales[i] < minSalario)
+            {
+                minSalario = salariosTotales[i];
+                nombreMin = empleados[i].nombre;
+            }
+        }
+        
+        double promedio = totalNomina / TOTAL_EMPLEADOS;
+        
+        Console.WriteLine("\n==================================================");
+        Console.WriteLine("              ESTADÍSTICAS GENERALES");
+        Console.WriteLine("==================================================");
+        Console.WriteLine($"Total nomina:            ${totalNomina,15:N0}");
+        Console.WriteLine($"Promedio salarial:       ${promedio,15:N0}");
+        Console.WriteLine($"Salario más alto:        ${maxSalario,15:N0} ({nombreMax})");
+        Console.WriteLine($"Salario más bajo:        ${minSalario,15:N0} ({nombreMin})");
+        
+        // RESALTAR EN ROJO EL CONTEO DE SALARIOS BAJOS
+        if (contadorSalariosBajos > 0)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Empleados < $2,000,000:  {contadorSalariosBajos,15}  <--- ATENCION");
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.WriteLine($"Empleados < $2,000,000:  {contadorSalariosBajos,15}");
+        }
+        
+        Console.WriteLine("==================================================");
+        
+        Console.WriteLine("\nPresione cualquier tecla para finalizar...");
+        Console.ReadKey();
+    }
+}
