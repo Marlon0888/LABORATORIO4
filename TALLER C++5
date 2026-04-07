@@ -1,0 +1,41 @@
+#include <iostream>
+using namespace std;
+
+double area(double r) {
+    return 3.1416 * r * r;
+}
+
+int factorial(int n) {
+    int f = 1;
+    for(int i = 1; i <= n; i++)
+        f *= i;
+    return f;
+}
+
+void par(int n) {
+    if(n % 2 == 0) cout << "Par\n";
+    else cout << "Impar\n";
+}
+
+int main() {
+    int op;
+    cin >> op;
+
+    if(op == 1) {
+        double r;
+        cin >> r;
+        cout << area(r);
+    }
+    else if(op == 2) {
+        int n;
+        cin >> n;
+        cout << factorial(n);
+    }
+    else if(op == 3) {
+        int n;
+        cin >> n;
+        par(n);
+    }
+
+    return 0;
+}
