@@ -1,0 +1,30 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+
+    float *notas = new float[n];
+    float suma = 0, mayor, menor;
+
+    for(int i = 0; i < n; i++) {
+        cin >> notas[i];
+        suma += notas[i];
+
+        if(i == 0) {
+            mayor = menor = notas[i];
+        } else {
+            if(notas[i] > mayor) mayor = notas[i];
+            if(notas[i] < menor) menor = notas[i];
+        }
+    }
+
+    cout << suma / n << endl;
+    cout << mayor << endl;
+    cout << menor << endl;
+
+    delete[] notas;
+
+    return 0;
+}
