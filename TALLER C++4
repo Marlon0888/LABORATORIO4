@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n, suma = 0, primo = 1;
+    cin >> n;
+
+    for(int i = 1; i <= 10; i++)
+        cout << n * i << endl;
+
+    for(int i = 1; i <= n; i++)
+        suma += i;
+
+    cout << suma << endl;
+
+    if(n <= 1) primo = 0;
+
+    for(int i = 2; i < n; i++)
+        if(n % i == 0)
+            primo = 0;
+
+    if(primo) cout << "Primo\n";
+    else cout << "No primo\n";
+
+    return 0;
+}
