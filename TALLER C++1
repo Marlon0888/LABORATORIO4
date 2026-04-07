@@ -1,0 +1,20 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int op;
+
+    cout << "Lenguaje compilado: se traduce antes de ejecutarse\n";
+    cout << "Lenguaje interpretado: se ejecuta linea por linea\n";
+    cout << "C++ es compilado\n";
+
+    cout << "1. Estructurado\n2. Orientado a objetos\n";
+    cin >> op;
+
+    if(op == 1)
+        cout << "Usa funciones y secuencia de instrucciones\n";
+    else if(op == 2)
+        cout << "Usa clases y objetos\n";
+
+    return 0;
+}
