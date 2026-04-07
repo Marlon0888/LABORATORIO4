@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Tarea {
+public:
+    string nombre;
+    int prioridad;
+    string fecha;
+    string estado;
+
+    void mostrar() {
+        cout << nombre << " " << prioridad << " " << fecha << " " << estado << endl;
+    }
+
+    void completar() {
+        estado = "completada";
+    }
+};
+
+int main() {
+    vector<Tarea> tareas;
+    int n;
+    cin >> n;
+
+    for(int i = 0; i < n; i++) {
+        Tarea t;
+        cin >> t.nombre >> t.prioridad >> t.fecha;
+        t.estado = "pendiente";
+        tareas.push_back(t);
+    }
+
+    for(int i = 0; i < tareas.size(); i++) {
+        tareas[i].mostrar();
+    }
+
+    if(tareas.size() > 3)
+        cout << "Organiza tu tiempo\n";
+
+    return 0;
+}
