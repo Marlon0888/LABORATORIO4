@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+
+    try {
+        cin >> n;
+
+        if(cin.fail())
+            throw "Error de conversion";
+
+        if(n < 0)
+            throw "Numero negativo";
+
+        cout << n;
+    }
+    catch(const char* e) {
+        cout << e;
+    }
+
+    return 0;
+}
