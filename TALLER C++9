@@ -1,0 +1,31 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    int op;
+    cin >> op;
+
+    if(op == 1) {
+        ofstream file("estudiantes.txt", ios::app);
+        string nombre, codigo;
+        float nota;
+
+        cin >> nombre >> codigo >> nota;
+        file << nombre << " " << codigo << " " << nota << endl;
+        file.close();
+    }
+    else if(op == 2) {
+        ifstream file("estudiantes.txt");
+        string nombre, codigo;
+        float nota;
+
+        while(file >> nombre >> codigo >> nota)
+            cout << nombre << " " << codigo << " " << nota << endl;
+
+        file.close();
+    }
+
+    return 0;
+}
