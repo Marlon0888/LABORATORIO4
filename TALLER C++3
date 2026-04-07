@@ -1,0 +1,18 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    double nota;
+    cin >> nota;
+
+    if(nota < 0 || nota > 5)
+        cout << "Fuera de rango\n";
+    else if(nota <= 2.9)
+        cout << "Reprueba\n";
+    else if(nota <= 4.5)
+        cout << "Aprueba\n";
+    else
+        cout << "Excelente\n";
+
+    return 0;
+}
