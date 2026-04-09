@@ -1,0 +1,83 @@
+using System;
+using System.IO;
+
+class Usuario
+{
+    public string User { get; set; }
+    public string Pass { get; set; }
+}
+
+class Cita
+{
+    public string Nombre { get; set; }
+    public string Fecha { get; set; }
+
+    public void Guardar()
+    {
+        File.AppendAllText("citas.txt", Nombre + " - " + Fecha + Environment.NewLine);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Usuario u = new Usuario();
+        u.User = "admin";
+        u.Pass = "1234";
+
+        Console.Write("Usuario: ");
+        string user = Console.ReadLine();
+
+        Console.Write("Contraseña: ");
+        string pass = Console.ReadLine();
+
+        if (user != u.User || pass != u.Pass)
+        {
+            Console.WriteLine("Acceso denegado");
+            return;
+        }
+
+        string opcion = "";
+        while (opcion != "3")
+        {
+            Console.WriteLine("1. Registrar cita");
+            Console.WriteLine("2. Ver citas");
+            Console.WriteLine("3. Salir");
+            Console.Write("Opcion: ");
+            opcion = Console.ReadLine();
+
+            try
+            {
+                if (opcion == "1")
+                {
+                    Cita c = new Cita();
+                    Console.Write("Nombre: ");
+                    c.Nombre = Console.ReadLine();
+                    Console.Write("Fecha: ");
+                    c.Fecha = Console.ReadLine();
+                    c.Guardar();
+                    Console.WriteLine("Cita guardada");
+                }
+                else if (opcion == "2")
+                {
+                    if (File.Exists("citas.txt"))
+                    {
+                        string texto = File.ReadAllText("citas.txt");
+                        Console.WriteLine(texto);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No hay citas registradas");
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Ocurrió un error");
+            }
+        }
+
+        Console.WriteLine("Sistema finalizado.");
+    }
+}
