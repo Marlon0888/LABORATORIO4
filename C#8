@@ -1,0 +1,26 @@
+using System;
+class Program
+{
+    static void Main()
+    {
+        string continuar = "S";
+        while (continuar.ToUpper() == "S")
+        {
+            try
+            {
+                Console.Write("Ingrese número de historia clínica: ");
+                int numero = int.Parse(Console.ReadLine());
+                Console.WriteLine("Historia clínica registrada: " + numero);
+            }
+            catch
+            {
+                Console.WriteLine("Error: Debe ingresar un número válido.");
+            }
+
+            Console.Write("¿Desea continuar? (S/N): ");
+            continuar = Console.ReadLine();
+        }
+
+        Console.WriteLine("Sistema finalizado.");
+    }
+}
